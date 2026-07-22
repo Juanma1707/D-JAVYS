@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D´JAVY — Cevichería & Anticuchería | Piura</title>
+    <title>D´JAVIS — Cevichería Anticuchería | Pide por WhatsApp</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -52,12 +52,8 @@
     </style>
 
     <script>
-        window.djavyApp = function() {
+        window.djavisApp = function() {
             return {
-                // GOOGLE SHEET PUBLIC CSV LINK
-                sheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSeYKKCtSWrPj7ywISMJksToww4P40CaGYItFky7uU6fmMmpl1qPT3ZT0y-XsGfnA/pub?output=csv',
-                isLoadingMenu: false,
-
                 // Navigation & State
                 selectedCategory: 'todas',
                 searchTerm: '',
@@ -68,6 +64,7 @@
                 floatingNotification: '',
 
                 // Store open status
+                activeSchedule: 'NORMAL',
                 isOpen: true,
 
                 // Product details modal
@@ -86,6 +83,7 @@
                 checkoutNotes: '',
                 gpsCoords: '',
                 checkoutPaymentMethod: 'yape',
+                cashAmountToPay: '',
 
                 // Delivery Calculation & Nearest Store
                 deliveryDistance: 0,
@@ -100,10 +98,9 @@
                 // Brand details
                 logoUrl: 'https://i.ibb.co/wZDjVKxQ/IMG-9271.jpg',
                 yapeNumber: '934348032',
-                yapeOwner: 'D´JAVY Piura',
-                deliveryTimeEstimate: '30–50 min',
+                yapeOwner: 'D´JAVIS Piura',
+                deliveryTimeEstimate: '30–50 min (fines de semana varía)',
 
-                // Sedes
                 sedes: [
                     {
                         id: 'puente-rojo',
@@ -145,7 +142,7 @@
 
                 selectedSedeId: 'puente-rojo',
 
-                // Categorías por defecto
+                // Menu Categories
                 categories: [
                     { id: 'duos-rondas', name: '🍱 Dúos y Rondas' },
                     { id: 'entradas', name: '🥟 Entradas' },
@@ -157,33 +154,118 @@
                     { id: 'bebidas', name: '🥤 Cervezas & Bebidas' }
                 ],
 
-                // Productos Locales de Respaldo (Fallback silencioso)
                 products: [
+                    // DÚOS Y RONDAS
                     { id: 'duo-criollo', name: 'Dúo Criollo', description: 'Elige 2 opciones entre: Majado de yuca, Costillas de cerdo, Seco de chavelo, o Carne seca.', category: 'duos-rondas', price: 55.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
                     { id: 'duo-marino', name: 'Dúo Marino', description: 'Elige 2 opciones entre: Ceviche, Arroz con mariscos, Chicharrón de pescado, o Tiradito.', category: 'duos-rondas', price: 50.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
                     { id: 'duo-la-negra', name: 'Dúo La Negra', description: 'Combinación especial de Arroz con conchas negras y Ceviche de conchas negras.', category: 'duos-rondas', price: 50.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
-                    { id: 'ronda-marina-djavy', name: 'Ronda Marina D’ Javy', description: 'Ceviche mixto + Arroz con mariscos + Chicharrón de pescado + Pulpo al olivo + Tequeños rellenos de langostinos.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
-                    { id: 'ronda-criolla-djavy', name: 'Ronda Criolla D’ Javy', description: 'Costillas de cerdo + Seco de chavelo + Majado de yuca + Carne seca + Chifles caseros con sarsa criolla.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ronda-marina-djavy', name: 'Ronda Marina D’ Javis', description: 'Ceviche mixto + Arroz con mariscos + Chicharrón de pescado + Pulpo al olivo + Tequeños rellenos de langostinos con guacamole.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ronda-criolla-djavy', name: 'Ronda Criolla D’ Javis', description: 'Costillas de cerdo + Seco de chavelo + Majado de yuca + Carne seca + Chifles caseros con sarsa criolla.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80' },
+
+                    // ENTRADAS
                     { id: 'leche-tigre', name: 'Leche de Tigre (Caliente o Fría)', description: 'Concentrado marino lleno de sabor piurano en zumo de limón, servido caliente o frío con canchita serrana.', category: 'entradas', price: 23.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
                     { id: 'leche-pantera', name: 'Leche de Pantera (Conchas Negras)', description: 'Potente concentrado afrodisíaco preparado con conchas negras frescas y limón piurano.', category: 'entradas', price: 25.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
                     { id: 'tequenos-10', name: 'Tequeños (10 Unid.)', description: 'Crocantes tequeños dorados rellenos a elección entre: Queso, Jamón o Langostinos, acompañados de guacamole.', category: 'entradas', price: 23.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'patacones-sarsa', name: 'Patacones con Sarsa', description: 'Discos crujientes de plátano verde frito acompañados de fresca sarsa criolla de cebolla.', category: 'entradas', price: 15.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chifles-caseros-sarsa', name: 'Chifles Caseros con Sarsa', description: 'Chifles piuranos artesanales super crocantes acompañados con su sarsa criolla recién hecha.', category: 'entradas', price: 15.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chorizo-parrillero-entrada', name: 'Chorizo Parrillero con Papas', description: 'Chorizo parrillero asado al carbón acompañado de papas fritas y ensalada fresca.', category: 'entradas', price: 12.0, image: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'alitas-bbq', name: 'Alitas BBQ (10 Unid.)', description: '10 jugosas alitas bañadas en salsa BBQ de la casa, servidas con papas fritas y ensalada.', category: 'entradas', price: 36.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'alitas-acevichadas', name: 'Alitas Acevichadas (10 Unid.)', description: '10 alitas crujientes en salsa acevichada cremosa, con papas fritas y ensalada.', category: 'entradas', price: 36.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'alitas-maracuya', name: 'Alitas de Maracuyá (10 Unid.)', description: '10 alitas fritas glaseadas en salsa agridulce de maracuyá piurana, con papas fritas y ensalada.', category: 'entradas', price: 36.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'alitas-brasa', name: 'Alitas a la Brasa (10 Unid.)', description: '10 alitas sazonadas a la brasa con toques ahumados al carbón, con papas fritas y ensalada.', category: 'entradas', price: 38.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+
+                    // DEL MAR PIURANO
                     { id: 'ceviche-filete', name: 'Ceviche de Filete', description: 'Filete de pescado fresco del día en zumo de limón piurano al momento, camote, choclo y canchita.', category: 'marino', price: 35.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
                     { id: 'ceviche-caballa', name: 'Ceviche de Caballa', description: 'Caballa fresca macerada en limón con cebolla y su sarandaja norteña tradicional.', category: 'marino', price: 35.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'filete-con-caballa', name: 'Filete con Caballa', description: 'Dúo marino de filete de pescado fresco combinado con jugosa caballa piurana.', category: 'marino', price: 41.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'filete-con-langostino', name: 'Filete con Langostino', description: 'Filete de pescado bañado en zumo de limón y servido con langostinos marinados.', category: 'marino', price: 43.0, image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ceviche-clasico', name: 'Ceviche Clásico (Filete y Conchas Negras)', description: 'La combinación perfecta de filete fresco de pescado y selectas conchas negras.', category: 'marino', price: 48.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ceviche-congrio', name: 'Ceviche de Congrio', description: 'Pescado congrio fino marinado al instante con ají mocharo y zumo de limón.', category: 'marino', price: 48.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ceviche-cabrillon-mero', name: 'Ceviche de Cabrillón o Mero', description: 'Exquisito corte de cabrillón o mero fresco marinado en limón norteño.', category: 'marino', price: 61.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
                     { id: 'ceviche-conchas-negras', name: 'Ceviche de Conchas Negras', description: 'Conchas negras piuranas en su propio jugo con limón, culantro y ají serrano.', category: 'marino', price: 38.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ceviche-tricolor', name: 'Ceviche Tricolor', description: 'Trilogía con conchas negras + ceviche de filete + tiradito clásico en crema.', category: 'marino', price: 46.0, image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=500&q=80' },
                     { id: 'ceviche-mixto', name: 'Ceviche Mixto', description: 'Calamar, caracol, langostino y pulpo marinado al momento con limón fresco y canchita.', category: 'marino', price: 48.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ceviche-mixto-afro', name: 'Ceviche Mixto Afro', description: 'Calamar, caracol, langostino, pulpo y una porción de sabrosas conchas negras.', category: 'marino', price: 58.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'especial-djavy-marino', name: 'Especial D’ Javis Marino', description: 'Ceviche de filete + conchas negras + tiradito + langostino al panko en salsa de maracuyá + anillas de calamar empanizadas.', category: 'marino', price: 68.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'tiradito', name: 'Tiradito (Filete o Caballa)', description: 'Finas láminas de filete o caballa en cremosa crema de ají amarillo sin cebolla.', category: 'marino', price: 36.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cabrillon-mero-sudado', name: 'Cabrillón o Mero (300g) - Sudado o Pasado', description: 'Pescado fresco de 300g preparado en tierno sudado con chicha de jora, tomate y ají.', category: 'marino', price: 60.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cabrillon-mero-parihuela', name: 'Cabrillón o Mero (300g) - Parihuela', description: 'Sopa marina reconfortante de cabrillón o mero con frutos del mar concentrados.', category: 'marino', price: 66.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cabrillon-mero-chupe', name: 'Cabrillón o Mero (300g) - Chupe', description: 'Cremoso chupe tradicional con verduras, huevo escalfado, queso frito y pescado fresco.', category: 'marino', price: 55.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cabrilla-sudado', name: 'Cabrilla (300g) - Sudado o Pasado', description: 'Cabrilla entera jugosa en su propio jugo con chicha norteña y tomates frescos.', category: 'marino', price: 46.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cabrilla-parihuela', name: 'Cabrilla (300g) - Parihuela', description: 'Concentrado marino sustancioso a base de cabrilla de 300g y especias piuranas.', category: 'marino', price: 56.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
                     { id: 'arroz-mariscos', name: 'Arroz con Mariscos', description: 'Arroz graneado en ají amarillo, pimiento y aderezo con mixtura de mariscos selectos.', category: 'marino', price: 38.0, image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'arroz-conchas-negras', name: 'Arroz con Conchas Negras', description: 'Arroz sazonado y cocinado en el concentrado de conchas negras piuranas.', category: 'marino', price: 48.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chupe-mariscos', name: 'Chupe de Mariscos', description: 'Sopa espesa y cremosa con mixtura de mariscos, arroz, habas, leche y queso.', category: 'marino', price: 48.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
+
+                    // CHICHARRONES
                     { id: 'chicharron-pollo-2', name: 'Chicharrón de Pollo (Para 2)', description: 'Trozos de pollo crocantes marinados en especias con papas doradas y sarsa criolla.', category: 'chicharrones', price: 41.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chicharron-pollo-3', name: 'Chicharrón de Pollo (Para 3)', description: 'Porción abundante de pollo crocante frito al punto ideal para 3 personas.', category: 'chicharrones', price: 56.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
                     { id: 'chicharron-pescado-2', name: 'Chicharrón de Pescado (Para 2)', description: 'Trozos de filete de pescado fritos al panko crocante con yucas y sarsa criolla.', category: 'chicharrones', price: 41.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chicharron-pescado-3', name: 'Chicharrón de Pescado (Para 3)', description: 'Trozos crocantes de pescado para compartir entre 3 personas con yuca dorada.', category: 'chicharrones', price: 56.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pollo-con-pescado-2', name: 'Pollo con Pescado (Para 2)', description: 'Dúo crocante de pollo frito y chicharrón de pescado con papas o yucas.', category: 'chicharrones', price: 46.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pollo-con-pescado-3', name: 'Pollo con Pescado (Para 3)', description: 'Combinación crujiente de chicharrón de pollo y pescado familiar para 3 personas.', category: 'chicharrones', price: 61.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pollo-con-mollejitas-2', name: 'Pollo con Mollejitas (Para 2)', description: 'Chicharrón crocante de pollo con jugosas mollejitas doradas al sazón D\'Javis.', category: 'chicharrones', price: 43.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pollo-con-mollejitas-3', name: 'Pollo con Mollejitas (Para 3)', description: 'Porción familiar de pollo y mollejitas frotadas con aderezo criollo frito.', category: 'chicharrones', price: 58.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pescado-con-langostinos-2', name: 'Pescado con Langostinos (Para 2)', description: 'Chicharrón mixto de pescado y langostinos empanizados crocantes.', category: 'chicharrones', price: 46.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pescado-con-langostinos-3', name: 'Pescado con Langostinos (Para 3)', description: 'Bandeja crujiente de chicharrón de pescado y langostinos para 3 personas.', category: 'chicharrones', price: 61.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'especial-djavy-chicharrones', name: 'Especial D’ Javis (Pollo + Pescado + Mollejas + Langostinos)', description: 'Cuatrilogía crujiente inolvidable: pollo + chicharrón de pescado + mollejitas + langostinos empanizados.', category: 'chicharrones', price: 51.0, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80' },
+
+                    // CRIOLLOS
                     { id: 'costillas-patacones-2', name: 'Costillas de Cerdo con Patacones (Para 2)', description: 'Costillar de cerdo dorado al punto con crocantes patacones de plátano verde.', category: 'criollos', price: 48.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'costillas-patacones-3', name: 'Costillas de Cerdo con Patacones (Para 3)', description: 'Abundantes costillas de cerdo asadas con patacones para compartir entre 3 personas.', category: 'criollos', price: 63.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
                     { id: 'seco-chavelo', name: 'Seco de Chavelo', description: 'Plátano verde majado y frito con cecina/carne seca sofrita con ají, tomate y chicha de jora.', category: 'criollos', price: 47.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'carne-alinada', name: 'Carne Aliñada', description: 'Sabrosa carne de cerdo sazonada en vinagre y especias piuranas a la plancha.', category: 'criollos', price: 48.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
                     { id: 'majado-yuca', name: 'Majado de Yuca', description: 'Yuca piurana majada en chicha y ají amarillo servida con trozos de chicharrón de cerdo.', category: 'criollos', price: 46.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'carne-al-jugo', name: 'Carne al Jugo', description: 'Cortes jugosos de carne macerados en vinagreta norteña con papas fritas y arroz.', category: 'criollos', price: 51.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
                     { id: 'carne-seca', name: 'Carne Seca', description: 'Tradicional carne seca piurana acompañada con chifles caseros + sarandaja + sarsa criolla.', category: 'criollos', price: 46.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'tacu-tacu-macho', name: 'Tacu Tacu a lo Macho', description: 'Dorado tacu tacu de frejol coronado con filete de pescado en salsa de mariscos.', category: 'criollos', price: 50.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'tacu-tacu-pobre', name: 'Tacu Tacu a lo Pobre', description: 'Tacu tacu frito con lomo fino + láminas de plátano maduro + huevos a la inglesa.', category: 'criollos', price: 50.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'patacones-rellenos', name: 'Patacones Rellenos (Lomo ó Mariscos)', description: 'Crocantes discos de plátano frito rellenos a tu elección de Lomo fino frito o Mariscos.', category: 'criollos', price: 50.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+
+                    // PARRILLAS & COMBOS
+                    { id: 'mollejitas-p1', name: 'Mollejitas (Para 1)', description: 'Mollejitas de pollo marinadas y asadas al carbón con papas doradas.', category: 'parrillas', price: 30.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
                     { id: 'mollejitas-p2', name: 'Mollejitas (Para 2)', description: 'Porción doble de mollejitas asadas al carbón servidas con ensalada y papas.', category: 'parrillas', price: 36.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pancitas-p1', name: 'Pancitas (Para 1)', description: 'Pancitas sazonadas a la parrilla de carbón con papa dorada y choclo.', category: 'parrillas', price: 25.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pancitas-p2', name: 'Pancitas (Para 2)', description: 'Pancitas a la parrilla abundantes para compartir con guarnición.', category: 'parrillas', price: 32.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
                     { id: 'anticuchos-brochetas', name: 'Anticuchos ó Brochetas', description: 'Brochetas de corazón de res o carne a la parrilla con chimichurri casero.', category: 'parrillas', price: 18.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chuleta-cerdo', name: 'Chuleta de Cerdo', description: 'Jugosa chuleta de cerdo sazonada y cocida a la brasa con papas fritas.', category: 'parrillas', price: 30.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'marucha-res', name: 'Marucha de Res', description: 'Corte de marucha de res blando asado al carbón con guarnición.', category: 'parrillas', price: 30.0, image: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'pollo-al-carbon', name: 'Pollo al Carbón', description: 'Pechuga o pierna de pollo dorada al carbón con especias criollas.', category: 'parrillas', price: 30.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'molleja-pancitas-p1', name: 'Molleja con Pancitas (Para 1)', description: 'Combinación clásica de mollejitas y pancitas a la brasa.', category: 'parrillas', price: 31.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'molleja-pancitas-p2', name: 'Molleja con Pancitas (Para 2)', description: 'Doble porción mixta de mollejitas y pancitas al carbón.', category: 'parrillas', price: 36.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'brocheta-mixta', name: 'Brocheta Mixta (Lomo de cerdo + res + pollo)', description: 'Brocheta abundante de lomo fino de cerdo, filete de res y pollo al carbón.', category: 'parrillas', price: 28.0, image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'choclo-limeno', name: 'Choclo Limeño', description: 'Choclo desgranado tierno servido con mantequilla y queso.', category: 'parrillas', price: 10.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'chorizo-parrillero', name: 'Chorizo Parrillero', description: 'Chorizo artesanal asado a la parrilla con chimichurri casero.', category: 'parrillas', price: 12.0, image: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=500&q=80' },
                     { id: 'combo-super', name: 'Combo Súper Parrillero', description: 'Anticucho + Chuleta de cerdo + Brocheta + Mollejitas + Chorizo parrillero + Papas fritas + Ensalada.', category: 'parrillas', price: 78.0, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'combo-ultra', name: 'Combo Ultra Parrillero', description: 'Chuleta de cerdo + Pollo al carbón + Marucha de res + Brocheta + Anticucho + Mollejitas + Chorizo parrillero + Papas fritas + Ensalada.', category: 'parrillas', price: 98.0, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'lomo-fino-250g', name: 'Lomo Fino (250g) [Próximamente]', description: 'Acompañado de papas fritas ó sancochadas + ensalada, con nuestro chimichurri al estilo D\'Javis.', category: 'parrillas', price: 45.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'bife-ancho-250g', name: 'Bife Ancho (250g) [Próximamente]', description: 'Acompañado de papas fritas ó sancochadas + ensalada, con nuestro chimichurri al estilo D\'Javis.', category: 'parrillas', price: 52.0, image: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'picana-250g', name: 'Picaña (250g) [Próximamente]', description: 'Acompañado de papas fritas ó sancochadas + ensalada, con nuestro chimichurri al estilo D\'Javis.', category: 'parrillas', price: 65.0, image: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=500&q=80' },
+
+                    // ADICIONALES
                     { id: 'papas-fritas', name: 'Papas Fritas', description: 'Porción de papas nativas o amarillas crujientes por fuera y suaves por dentro.', category: 'adicionales', price: 10.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'camote', name: 'Camote', description: 'Porción de camote glaseado o frito, ideal acompañamiento para ceviches y chicharrones.', category: 'adicionales', price: 5.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'arroz', name: 'Arroz', description: 'Porción de arroz blanco de grano largo sueltito y recién cocinado.', category: 'adicionales', price: 5.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ensalada', name: 'Ensalada', description: 'Ensalada fresca de lechuga, tomate, pepino y alineada con vinagreta artesanal.', category: 'adicionales', price: 8.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
+
+                    // BEBIDAS Y CERVEZAS
+                    { id: 'cerveza-cristal', name: 'Cristal', description: 'Cerveza rubia peruana tradicional personal bien heladita.', category: 'bebidas', price: 9.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
                     { id: 'cerveza-pilsen', name: 'Pilsen Callao', description: 'La cerveza de la amistad personal bien helada.', category: 'bebidas', price: 10.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cusquena-trigo', name: 'Cusqueña Trigo', description: 'Cerveza de trigo de aroma fino y sabor suave refinado.', category: 'bebidas', price: 10.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cusquena-negra', name: 'Cusqueña Negra', description: 'Cerveza tipo malta de sabor intenso y notas dulces de caramelo.', category: 'bebidas', price: 10.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'heineken-gr', name: 'Heineken GR', description: 'Cerveza lager internacional refrescante heladita.', category: 'bebidas', price: 9.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'cerveza-corona', name: 'Corona', description: 'Cerveza clara mexicana, perfecta para acompañar ceviches y mariscos.', category: 'bebidas', price: 10.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'vino-tabernero', name: 'Vino Tinto o Rosé (Tabernero)', description: 'Botella de vino peruano Tabernero a elección (Tinto o Rosé).', category: 'bebidas', price: 35.0, image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'sangria', name: 'Sangría (Jarra)', description: 'Jarra de sangría preparada con vino tinto, frutas de estación y toques cítricos.', category: 'bebidas', price: 33.0, image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'agua-mineral', name: 'Agua Mineral', description: 'Agua de mesa personal con o sin gas (500ml).', category: 'bebidas', price: 4.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'gaseosa-medio', name: 'Gaseosa 1/2 Litro', description: 'Gaseosa personal de 500ml (Inca Kola, Coca Cola u otra marca a elección).', category: 'bebidas', price: 5.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'gaseosa-1L', name: 'Gaseosa 1 Litro', description: 'Botella de gaseosa de 1 Litro.', category: 'bebidas', price: 8.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'gaseosa-1p5L', name: 'Gaseosa 1 1/2 Litros', description: 'Botella familiar de gaseosa de 1.5 Litros.', category: 'bebidas', price: 12.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'gaseosa-3L', name: 'Gaseosa 3 Litros', description: 'Botella de gaseosa familiar gigante de 3 Litros.', category: 'bebidas', price: 18.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
                     { id: 'chicha-morada-jarra', name: 'Chicha Morada (Jarra)', description: 'Jarra helada de chicha de maíz morado piurana hervida con canela, clavo y limón.', category: 'bebidas', price: 17.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'refresco-maracuya-jarra', name: 'Maracuyá (Jarra)', description: 'Jarra helada de jugo concentrado natural de maracuyá piurana.', category: 'bebidas', price: 17.0, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80' },
+
+                    // SAUCES
                     { id: 'salsa-aji', name: 'Ají de la Casa', description: 'Ají picante estilo norteño.', category: 'cremas', price: 0.0, image: '' },
                     { id: 'salsa-criolla', name: 'Salsa Criolla', description: 'Cebolla criolla fresca en corte fino.', category: 'cremas', price: 0.0, image: '' },
                     { id: 'salsa-golf', name: 'Salsa Golf', description: 'Clásica salsa golf de la casa.', category: 'cremas', price: 0.0, image: '' },
@@ -191,7 +273,7 @@
                 ],
 
                 initData() {
-                    const savedData = localStorage.getItem('djavy_saved_profile');
+                    const savedData = localStorage.getItem('djavis_saved_profile');
                     if (savedData) {
                         try {
                             const parsed = JSON.parse(savedData);
@@ -203,104 +285,12 @@
                             this.gpsCoords = parsed.gpsCoords || '';
                             this.selectedSedeId = parsed.selectedSedeId || 'puente-rojo';
                         } catch (e) {
-                            console.error("Error al cargar perfil local:", e);
+                            console.error("Error al cargar perfil", e);
                         }
                     }
 
-                    // Sincronización 100% SILENCIOSA de la Google Sheet al iniciar
-                    this.fetchSheetData();
-                },
-
-                // FETCH TOTALMENTE SILENCIOSO DE GOOGLE SHEETS
-                async fetchSheetData() {
-                    this.isLoadingMenu = true;
-                    try {
-                        const response = await fetch(this.sheetUrl);
-                        if (response.ok) {
-                            const rawText = await response.text();
-                            const parsedProducts = this.parseCSVData(rawText);
-                            if (parsedProducts && parsedProducts.length > 0) {
-                                this.products = parsedProducts;
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Sincronización silenciosa offline. Usando carta local de respaldo.", e);
-                    } finally {
-                        this.isLoadingMenu = false;
-                    }
-                },
-
-                // PARSER ROBUSTO DE CSV / TSV SILENCIOSO
-                parseCSVData(text) {
-                    if (!text || !text.trim()) return [];
-                    const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-                    if (lines.length < 2) return [];
-
-                    // Detectar separador (, o \t o ;)
-                    let delimiter = ',';
-                    if (lines[0].includes('\t')) delimiter = '\t';
-                    else if (lines[0].includes(';') && !lines[0].includes(',')) delimiter = ';';
-
-                    const parseLine = (line) => {
-                        const res = [];
-                        let cur = '';
-                        let inQuotes = false;
-                        for (let i = 0; i < line.length; i++) {
-                            const char = line[i];
-                            if (char === '"' || char === "'") {
-                                if (inQuotes && line[i+1] === char) { cur += char; i++; }
-                                else { inQuotes = !inQuotes; }
-                            } else if (char === delimiter && !inQuotes) {
-                                res.push(cur.trim()); cur = '';
-                            } else {
-                                cur += char;
-                            }
-                        }
-                        res.push(cur.trim());
-                        return res;
-                    };
-
-                    const headers = parseLine(lines[0]).map(h => h.toLowerCase().replace(/["\r\n]/g, '').trim());
-                    const fetchedProds = [];
-
-                    for (let i = 1; i < lines.length; i++) {
-                        const cols = parseLine(lines[i]);
-                        if (!cols || cols.length === 0) continue;
-
-                        const item = {};
-                        headers.forEach((h, idx) => {
-                            item[h] = cols[idx] ? cols[idx].replace(/^["']|["']$/g, '').trim() : '';
-                        });
-
-                        // Leer variables de configuración globales si estuvieran en la hoja
-                        if (item.clave || item.id === 'logo' || item.categoria === 'config') {
-                            if (item.clave === 'logo_url' || item.imagen_url) this.logoUrl = item.valor || item.imagen_url || this.logoUrl;
-                            if (item.clave === 'yape_numero') this.yapeNumber = item.valor || this.yapeNumber;
-                            if (item.clave === 'yape_titular') this.yapeOwner = item.valor || this.yapeOwner;
-                            if (item.clave === 'tiempo_delivery') this.deliveryTimeEstimate = item.valor || this.deliveryTimeEstimate;
-                            continue;
-                        }
-
-                        const nombre = item.nombre || item.name || item.plato || item.producto;
-                        const categoria = (item.categoria || item.category || '').toLowerCase();
-                        const estado = (item.estado || item.status || 'disponible').toLowerCase();
-                        const precioRaw = item.precio || item.price || '0';
-                        const precio = parseFloat(precioRaw.toString().replace(/[^0-9.]/g, '')) || 0;
-                        const descripcion = item.descripcion || item.description || '';
-                        const imagen = item.imagen_url || item.imagen || item.image || 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80';
-
-                        if (nombre && categoria && (estado === 'disponible' || estado === 'activo' || estado === 'si' || estado === '1')) {
-                            fetchedProds.push({
-                                id: item.id || `prod-${i}`,
-                                name: nombre,
-                                description: descripcion,
-                                category: categoria,
-                                price: precio,
-                                image: imagen
-                            });
-                        }
-                    }
-                    return fetchedProds;
+                    this.updateOpenStatus();
+                    setInterval(() => { this.updateOpenStatus(); }, 30000);
                 },
 
                 getSelectedSede() {
@@ -309,7 +299,9 @@
 
                 selectSede(id, isManual = true) {
                     this.selectedSedeId = id;
-                    if (isManual) { this.autoNearestSedeName = ''; }
+                    if (isManual) {
+                        this.autoNearestSedeName = ''; // Limpiar mensaje automático
+                    }
                     if (this.gpsCoords) {
                         const parts = this.gpsCoords.split(',');
                         if (parts.length === 2) {
@@ -322,12 +314,17 @@
                     }
                 },
 
+                updateOpenStatus() {
+                    this.isOpen = true; // Mantener abierto para pruebas y recepción continua
+                },
+
                 calculateDistance(lat1, lon1, lat2, lon2) {
-                    const R = 6371;
+                    const R = 6371; // Radio de la Tierra en km
                     const dLat = (lat2 - lat1) * Math.PI / 180;
                     const dLon = (lon2 - lon1) * Math.PI / 180;
-                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const a =
+                        Math.sin(dLat/2) * Math.sin(dLat/2) +
+                        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
                     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
                     return R * c;
                 },
@@ -389,7 +386,7 @@
                         this.triggerNotification("❌ Tu navegador no soporta geolocalización.");
                         return;
                     }
-                    this.triggerNotification("⏳ Ubicando en el mapa...");
+                    this.triggerNotification("⏳ Detectando tu ubicación GPS...");
 
                     navigator.geolocation.getCurrentPosition(
                         async (position) => {
@@ -403,11 +400,11 @@
                             await this.reverseGeocode(lat, lng);
 
                             const sede = this.getSelectedSede();
-                            this.triggerNotification(`📍 GPS fijado. Sede asignada: ${sede.name}`);
+                            this.triggerNotification(`✅ GPS detectado. Sede asignada: ${sede.name} (${this.deliveryDistance.toFixed(2)} km)`);
                         },
                         (error) => {
                             console.error(error);
-                            this.triggerNotification("❌ No se pudo obtener la ubicación GPS.");
+                            this.triggerNotification("❌ No pudimos acceder a tu GPS. Activa tus permisos de ubicación.");
                         },
                         { enableHighAccuracy: true, timeout: 10000 }
                     );
@@ -446,7 +443,7 @@
                         this.triggerNotification("⚠️ Escribe una dirección para buscarla.");
                         return;
                     }
-                    this.triggerNotification("⏳ Buscando dirección...");
+                    this.triggerNotification("⏳ Buscando dirección en el mapa...");
                     try {
                         const query = encodeURIComponent(`${this.checkoutAddress.trim()}, Piura, Peru`);
                         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`, {
@@ -463,14 +460,14 @@
 
                                 this.onMarkerMove(lat, lng, true);
                                 const sede = this.getSelectedSede();
-                                this.triggerNotification(`🎯 Dirección encontrada. Sede: ${sede.name}`);
+                                this.triggerNotification(`🎯 Ubicación fijada. Sede asignada: ${sede.name}`);
                             } else {
-                                this.triggerNotification("❌ No se encontró la dirección.");
+                                this.triggerNotification("❌ No se encontró la dirección. Prueba arrastrando el marcador.");
                             }
                         }
                     } catch (e) {
                         console.error(e);
-                        this.triggerNotification("❌ Error al conectar con el mapa.");
+                        this.triggerNotification("❌ Error al conectar con el servidor de mapas.");
                     }
                 },
 
@@ -700,7 +697,7 @@
                     }
 
                     const businessPhone = sede.phone;
-                    let msg = `🐟 *NUEVO PEDIDO - D´JAVY* 🔥\n\n`;
+                    let msg = `🐟 *NUEVO PEDIDO - D´JAVIS* 🔥\n\n`;
                     msg += `🏬 *Sede Asignada:* ${sede.name}\n`;
                     msg += `📍 *Dirección Sede:* ${sede.address}\n`;
                     msg += `👤 *Cliente:* ${this.checkoutName.trim()}\n`;
@@ -747,7 +744,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-dj-sand text-dj-charcoal font-sans min-h-screen selection:bg-dj-teal selection:text-white transition-all duration-150 relative pb-10"
-      x-data="djavyApp()"
+      x-data="djavisApp()"
       :class="isCartOpen || isDetailOpen ? 'overflow-hidden h-screen' : ''"
       x-init="initData()">
 
@@ -755,28 +752,21 @@
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div id="logo-container" class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white overflow-hidden shadow-md border-2 border-dj-teal flex items-center justify-center p-0.5">
-                    <img :src="logoUrl" alt="Logo D´JAVY" class="w-full h-full object-cover rounded-full">
+                    <img :src="logoUrl" alt="Logo D´JAVIS" class="w-full h-full object-cover rounded-full">
                 </div>
                 <div>
-                    <h1 class="font-display font-bold text-2xl md:text-3xl tracking-wide text-dj-teal leading-none">D´JAVY</h1>
+                    <h1 class="font-display font-bold text-2xl md:text-3xl tracking-wide text-dj-teal leading-none">D´JAVIS</h1>
                     <p class="text-[9px] md:text-xs font-extrabold tracking-widest text-dj-teal/80 uppercase mt-0.5">Cevichería · Anticuchería</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <button @click="fetchSheetData()" title="Actualizar carta"
-                        class="p-2.5 bg-dj-teal/5 hover:bg-dj-teal/15 text-dj-teal rounded-full transition-all flex items-center justify-center border border-dj-teal/20">
-                    <i class="fa-solid fa-rotate text-sm" :class="isLoadingMenu ? 'animate-spin' : ''"></i>
-                </button>
-
-                <button @click="isCartOpen = true"
-                        class="relative p-3 bg-dj-teal/10 hover:bg-dj-teal/20 text-dj-teal rounded-full transition-all flex items-center justify-center">
-                    <i class="fa-solid fa-bowl-food text-xl"></i>
-                    <span x-show="getCartItemsCount() > 0"
-                          class="absolute -top-1 -right-1 bg-dj-teal text-white font-extrabold text-[10px] h-5 w-5 rounded-full flex items-center justify-center shadow-md"
-                          x-text="getCartItemsCount()"></span>
-                </button>
-            </div>
+            <button @click="isCartOpen = true"
+                    class="relative p-3 bg-dj-teal/10 hover:bg-dj-teal/20 text-dj-teal rounded-full transition-all flex items-center justify-center">
+                <i class="fa-solid fa-bowl-food text-xl"></i>
+                <span x-show="getCartItemsCount() > 0"
+                      class="absolute -top-1 -right-1 bg-dj-teal text-white font-extrabold text-[10px] h-5 w-5 rounded-full flex items-center justify-center animate-bounce shadow-md"
+                      x-text="getCartItemsCount()"></span>
+            </button>
         </div>
     </header>
 
@@ -817,8 +807,8 @@
                 </div>
             </div>
 
-            <div class="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden shadow-xl border-4 border-dj-teal transition-all duration-300 flex-shrink-0">
-                <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80" alt="Ceviche D´JAVY" class="w-full h-full object-cover">
+            <div class="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden shadow-xl border-4 border-dj-teal transition-all duration-300">
+                <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80" alt="Ceviche D´JAVIS" class="w-full h-full object-cover">
             </div>
         </div>
     </div>
@@ -854,9 +844,10 @@
                 </div>
             </aside>
 
+            <!-- Lista de Productos -->
             <div class="lg:col-span-3 space-y-10">
                 <template x-for="cat in categories" :key="cat.id">
-                    <div x-show="shouldShowCategory(cat.id) && getFilteredProducts(cat.id).length > 0" class="space-y-4" :id="`sec-${cat.id}`">
+                    <div x-show="shouldShowCategory(cat.id)" class="space-y-4" :id="`sec-${cat.id}`">
                         <h3 class="font-display font-semibold text-xl md:text-2xl text-dj-teal border-b-2 border-dj-teal pb-2 flex justify-between items-center">
                             <span x-text="cat.name"></span>
                         </h3>
@@ -922,7 +913,7 @@
                     </div>
                 </div>
 
-                <template x-if="selectedProductForDetail && isCustomizable(selectedProductForDetail.category) && getCremas().length > 0">
+                <template x-if="selectedProductForDetail && isCustomizable(selectedProductForDetail.category)">
                     <div class="space-y-3 border-t border-dj-sand pt-3">
                         <h4 class="font-bold text-xs uppercase tracking-wider text-dj-teal">ELIGE TUS SALSAS PARA CADA PORCIÓN:</h4>
                         <template x-for="(selection, index) in detailCreamsSelections" :key="index">
@@ -967,7 +958,7 @@
                         <button x-show="currentStep === 'checkout'" @click="currentStep = 'cart'" class="text-white hover:text-white/80 mr-1 text-xs flex items-center gap-1 bg-white/10 px-2.5 py-1.5 rounded-lg transition font-extrabold">
                             <i class="fa-solid fa-chevron-left text-[10px]"></i> Volver
                         </button>
-                        <h2 class="font-display font-semibold text-base sm:text-lg tracking-wide" x-text="currentStep === 'cart' ? 'Tu Pedido D´JAVY' : 'Finalizar Pedido'"></h2>
+                        <h2 class="font-display font-semibold text-base sm:text-lg tracking-wide" x-text="currentStep === 'cart' ? 'Tu Pedido D´JAVIS' : 'Finalizar Pedido'"></h2>
                     </div>
                     <button @click="isCartOpen = false" class="text-white text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
                 </div>
@@ -1015,7 +1006,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: CHECKOUT -->
+                    <!-- PASO 2: CHECKOUT CON FILTRADO AUTOMÁTICO DE SEDES -->
                     <div x-show="currentStep === 'checkout'" class="space-y-4">
 
                         <!-- Selector & Asignador de Sede -->
@@ -1080,10 +1071,11 @@
                                     </div>
                                 </div>
 
+                                <!-- Botón GPS Destacado -->
                                 <div>
                                     <button type="button" @click="getCurrentLocationGPS()"
                                             class="w-full py-3 px-4 bg-dj-sand border-2 border-dashed border-dj-teal/40 hover:border-dj-teal hover:bg-dj-teal/10 text-dj-teal rounded-2xl text-xs font-extrabold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
-                                        <i class="fa-solid fa-location-crosshairs text-base text-dj-teal"></i>
+                                        <i class="fa-solid fa-location-crosshairs text-base text-dj-teal animate-spin-slow"></i>
                                         <span>📍 Usar mi ubicación GPS actual</span>
                                     </button>
                                 </div>
@@ -1134,7 +1126,7 @@
                                     <span>Yape / Plin: <strong x-text="yapeNumber"></strong></span>
                                     <button type="button" @click="copyToClipboard(yapeNumber)" class="bg-white/20 px-2 py-0.5 rounded text-[10px] font-extrabold">Copiar</button>
                                 </div>
-                                <p class="text-[9px] opacity-90" x-text="`Titular: ${yapeOwner}`"></p>
+                                <p class="text-[9px] opacity-90">Titular: D´JAVIS Piura</p>
                             </div>
                         </div>
                     </div>
@@ -1173,10 +1165,10 @@
             <span>•</span>
             <a href="https://tiktok.com/@djavy.piura" target="_blank" class="hover:underline flex items-center gap-1"><i class="fa-brands fa-tiktok"></i> @djavy.piura</a>
         </div>
-        <p class="text-[10px] text-dj-charcoal/60 font-semibold">© D´JAVY — Cevichería & Anticuchería Piura. Todos los derechos reservados.</p>
+        <p class="text-[10px] text-dj-charcoal/60 font-semibold">© D´JAVIS — Cevichería & Anticuchería Piura. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Notificación Flotante Discreta para acciones del usuario -->
+    <!-- Notificación Flotante -->
     <div x-show="floatingNotification" class="fixed bottom-4 left-4 right-4 md:left-auto md:w-80 bg-dj-charcoal text-white p-3.5 rounded-xl shadow-2xl z-50 flex items-center justify-between border border-dj-teal/20" style="display: none;">
         <span class="text-xs font-bold" x-text="floatingNotification"></span>
         <button @click="floatingNotification = ''" class="text-dj-teal font-black text-xs px-2">OK</button>
@@ -1184,7 +1176,7 @@
 
     <!-- Botón Flotante Ver Pedido -->
     <button @click="isCartOpen = true" x-show="!isCartOpen"
-            class="fixed bottom-4 right-4 z-40 bg-dj-teal hover:bg-dj-tealDark text-white font-bold py-2.5 px-4 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2 border border-white text-xs sm:text-sm">
+            class="fixed bottom-4 right-4 z-40 bg-dj-teal hover:bg-dj-tealDark text-white font-bold py-2.5 px-4 rounded-full shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center gap-2 border border-white text-xs sm:text-sm">
         <span class="relative">
             <i class="fa-solid fa-bowl-food text-sm sm:text-base text-white"></i>
             <span x-show="getCartItemsCount() > 0" class="absolute -top-2.5 -right-2.5 bg-white text-dj-teal font-black text-[8px] h-4 w-4 rounded-full flex items-center justify-center border border-dj-teal animate-pulse" x-text="getCartItemsCount()"></span>
