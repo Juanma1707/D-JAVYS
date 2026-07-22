@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D´JAVIS — Cevichería Anticuchería | Pide por WhatsApp</title>
+    <title>D´JAVY — Cevichería Anticuchería | Pide por WhatsApp</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -52,10 +52,10 @@
     </style>
 
     <script>
-        window.djavisApp = function() {
+        window.djavyApp = function() {
             return {
                 // CONFIGURACIÓN DE CONEXIÓN CON GOOGLE SHEETS
-                sheetId: '1OUL250EPvYVLGINor_hMdaEGkv6GEI8I', // 👈 Tu ID de Google Sheets
+                sheetId: '1OUL250EPvYVLGINor_hMdaEGkv6GEI8I', // Acepta tanto el ID estándar como el token 2PACX-...
                 isLoadingMenu: false,
 
                 // Navigation & State
@@ -102,7 +102,7 @@
                 // Brand details
                 logoUrl: 'https://i.ibb.co/wZDjVKxQ/IMG-9271.jpg',
                 yapeNumber: '934348032',
-                yapeOwner: 'D´JAVIS Piura',
+                yapeOwner: 'D´JAVY Piura',
                 deliveryTimeEstimate: '30–50 min (fines de semana varía)',
 
                 // Fallback de Sedes
@@ -159,13 +159,13 @@
                     { id: 'bebidas', name: '🥤 Cervezas & Bebidas' }
                 ],
 
-                // PRODUCTOS RESPALDO (Aseguran que la carta NUNCA quede vacía)
+                // PRODUCTOS DE RESPALDO (Garantiza que la carta NUNCA se quede vacía)
                 products: [
                     { id: 'duo-criollo', name: 'Dúo Criollo', description: 'Elige 2 opciones entre: Majado de yuca, Costillas de cerdo, Seco de chavelo, o Carne seca.', category: 'duos-rondas', price: 55.0, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
                     { id: 'duo-marino', name: 'Dúo Marino', description: 'Elige 2 opciones entre: Ceviche, Arroz con mariscos, Chicharrón de pescado, o Tiradito.', category: 'duos-rondas', price: 50.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
                     { id: 'duo-la-negra', name: 'Dúo La Negra', description: 'Combinación especial de Arroz con conchas negras y Ceviche de conchas negras.', category: 'duos-rondas', price: 50.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
-                    { id: 'ronda-marina-djavy', name: 'Ronda Marina D’ Javis', description: 'Ceviche mixto + Arroz con mariscos + Chicharrón de pescado + Pulpo al olivo + Tequeños rellenos de langostinos con guacamole.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
-                    { id: 'ronda-criolla-djavy', name: 'Ronda Criolla D’ Javis', description: 'Costillas de cerdo + Seco de chavelo + Majado de yuca + Carne seca + Chifles caseros con sarsa criolla.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ronda-marina-djavy', name: 'Ronda Marina D’ Javy', description: 'Ceviche mixto + Arroz con mariscos + Chicharrón de pescado + Pulpo al olivo + Tequeños rellenos de langostinos con guacamole.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=500&q=80' },
+                    { id: 'ronda-criolla-djavy', name: 'Ronda Criolla D’ Javy', description: 'Costillas de cerdo + Seco de chavelo + Majado de yuca + Carne seca + Chifles caseros con sarsa criolla.', category: 'duos-rondas', price: 85.0, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80' },
                     { id: 'leche-tigre', name: 'Leche de Tigre (Caliente o Fría)', description: 'Concentrado marino lleno de sabor piurano en zumo de limón, servido caliente o frío con canchita serrana.', category: 'entradas', price: 23.0, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80' },
                     { id: 'leche-pantera', name: 'Leche de Pantera (Conchas Negras)', description: 'Potente concentrado afrodisíaco preparado con conchas negras frescas y limón piurano.', category: 'entradas', price: 25.0, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80' },
                     { id: 'tequenos-10', name: 'Tequeños (10 Unid.)', description: 'Crocantes tequeños dorados rellenos a elección entre: Queso, Jamón o Langostinos, acompañados de guacamole.', category: 'entradas', price: 23.0, image: 'https://images.unsplash.com/photo-1599490659213-e0b7e0dc5ea1?auto=format&fit=crop&w=500&q=80' },
@@ -195,7 +195,7 @@
                 ],
 
                 initData() {
-                    const savedData = localStorage.getItem('djavis_saved_profile');
+                    const savedData = localStorage.getItem('djavy_saved_profile');
                     if (savedData) {
                         try {
                             const parsed = JSON.parse(savedData);
@@ -216,78 +216,47 @@
                     setInterval(() => { this.updateOpenStatus(); }, 30000);
                 },
 
-                // LECTOR AUTOMÁTICO MEJORADO DE GOOGLE SHEETS (FORMATO TSV)
+                // LECTOR ULTRA SEGURO DE GOOGLE SHEETS (ESTILO BIG BITE EN FORMATO TSV)
                 async fetchSheetData() {
                     if (!this.sheetId || this.sheetId === 'TU_GOOGLE_SHEET_ID_AQUI') return;
                     this.isLoadingMenu = true;
 
                     try {
-                        // 1. Cargar Productos
-                        const prodUrl = `https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=tsv&sheet=Productos`;
-                        const prodRes = await fetch(prodUrl);
+                        let mainUrl = '';
+                        if (this.sheetId.startsWith('2PACX-')) {
+                            mainUrl = `https://docs.google.com/spreadsheets/d/e/${this.sheetId}/pub?output=tsv`;
+                        } else {
+                            mainUrl = `https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=tsv`;
+                        }
+
+                        // Fetching de productos/carta
+                        const prodRes = await fetch(mainUrl);
                         if (prodRes.ok) {
                             const text = await prodRes.text();
-                            const parsed = this.parseTSV(text);
-                            const fetchedProds = [];
-                            parsed.forEach(item => {
-                                const estadoVal = (item.estado || 'disponible').toLowerCase().trim();
-                                if (item.nombre && item.categoria && estadoVal === 'disponible') {
-                                    fetchedProds.push({
-                                        id: item.id || `prod-${Math.random()}`,
-                                        name: item.nombre,
-                                        description: item.descripcion || '',
-                                        category: (item.categoria || '').toLowerCase().trim(),
-                                        price: parseFloat(item.precio) || 0,
-                                        image: item.imagen_url || 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80'
-                                    });
-                                }
-                            });
+                            const fetchedProds = this.parseTSVProducts(text);
                             if (fetchedProds.length > 0) {
                                 this.products = fetchedProds;
                             }
                         }
 
-                        // 2. Cargar Sedes
-                        const sedesUrl = `https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=tsv&sheet=Sedes`;
-                        const sedesRes = await fetch(sedesUrl);
-                        if (sedesRes.ok) {
-                            const text = await sedesRes.text();
-                            const parsed = this.parseTSV(text);
-                            const fetchedSedes = [];
-                            parsed.forEach(s => {
-                                const estadoVal = (s.estado || 'activo').toLowerCase().trim();
-                                if (s.nombre && estadoVal === 'activo') {
-                                    fetchedSedes.push({
-                                        id: s.id || `sede-${Math.random()}`,
-                                        name: s.nombre,
-                                        address: s.direccion || '',
-                                        phone: s.telefono || '',
-                                        lat: parseFloat(s.latitud) || 0,
-                                        lng: parseFloat(s.longitud) || 0,
-                                        scheduleText: s.horario_texto || ''
-                                    });
+                        // Intentar cargar Sedes si es una hoja de trabajo estándar con pestañas
+                        if (!this.sheetId.startsWith('2PACX-')) {
+                            try {
+                                const sedesRes = await fetch(`https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=tsv&sheet=Sedes`);
+                                if (sedesRes.ok) {
+                                    const sedesText = await sedesRes.text();
+                                    const fetchedSedes = this.parseTSVSedes(sedesText);
+                                    if (fetchedSedes.length > 0) this.sedes = fetchedSedes;
                                 }
-                            });
-                            if (fetchedSedes.length > 0) {
-                                this.sedes = fetchedSedes;
-                            }
-                        }
+                            } catch(errSedes) {}
 
-                        // 3. Cargar Configuración
-                        const configUrl = `https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=tsv&sheet=Configuracion`;
-                        const configRes = await fetch(configUrl);
-                        if (configRes.ok) {
-                            const text = await configRes.text();
-                            const parsed = this.parseTSV(text);
-                            parsed.forEach(c => {
-                                const clave = (c.clave || '').toLowerCase().trim();
-                                const valor = c.valor || '';
-                                if (clave === 'logo_url' && valor) this.logoUrl = valor;
-                                if (clave === 'yape_numero' && valor) this.yapeNumber = valor;
-                                if (clave === 'yape_titular' && valor) this.yapeOwner = valor;
-                                if (clave === 'tiempo_delivery' && valor) this.deliveryTimeEstimate = valor;
-                                if (clave === 'horario_activo' && valor) this.activeSchedule = valor;
-                            });
+                            try {
+                                const configRes = await fetch(`https://docs.google.com/spreadsheets/d/${this.sheetId}/export?format=tsv&sheet=Configuracion`);
+                                if (configRes.ok) {
+                                    const configText = await configRes.text();
+                                    this.parseTSVConfig(configText);
+                                }
+                            } catch(errConfig) {}
                         }
                     } catch (e) {
                         console.error("Error al sincronizar con Google Sheets:", e);
@@ -296,25 +265,98 @@
                     }
                 },
 
-                // PARSER DE TSV (Tab-Separated-Values) ultra confiable
-                parseTSV(text) {
+                parseTSVProducts(text) {
                     const lines = text.split(/\r?\n/);
                     if (lines.length < 2) return [];
 
-                    const headers = lines[0].split('\t').map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
-                    const data = [];
+                    const headers = lines[0].split('\t').map(h => h.trim().toLowerCase().replace(/["\r\n]/g, ''));
+                    const fetchedProds = [];
 
                     for (let i = 1; i < lines.length; i++) {
                         const line = lines[i].trim();
                         if (!line) continue;
+
                         const cols = lines[i].split('\t').map(c => c.trim().replace(/^"|"$/g, ''));
                         const item = {};
-                        headers.forEach((h, idx) => {
-                            item[h] = cols[idx] || '';
-                        });
-                        data.push(item);
+                        headers.forEach((h, idx) => { item[h] = cols[idx] || ''; });
+
+                        // Leer configuraciones unificadas en la misma hoja si aplican
+                        if (item.clave || item.id === 'logo' || item.categoria === 'config' || item.nombre?.toLowerCase().includes('logo')) {
+                            if (item.clave === 'logo_url' || item.imagen_url) this.logoUrl = item.valor || item.imagen_url || this.logoUrl;
+                            if (item.clave === 'yape_numero') this.yapeNumber = item.valor;
+                            if (item.clave === 'yape_titular') this.yapeOwner = item.valor;
+                            if (item.clave === 'tiempo_delivery') this.deliveryTimeEstimate = item.valor;
+                            continue;
+                        }
+
+                        const estado = (item.estado || 'disponible').toLowerCase();
+                        if (item.nombre && item.categoria && estado === 'disponible') {
+                            fetchedProds.push({
+                                id: item.id || `prod-${i}`,
+                                name: item.nombre,
+                                description: item.descripcion || '',
+                                category: item.categoria.toLowerCase(),
+                                price: parseFloat(item.precio) || 0,
+                                image: item.imagen_url || 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80'
+                            });
+                        }
                     }
-                    return data;
+                    return fetchedProds;
+                },
+
+                parseTSVSedes(text) {
+                    const lines = text.split(/\r?\n/);
+                    if (lines.length < 2) return [];
+
+                    const headers = lines[0].split('\t').map(h => h.trim().toLowerCase().replace(/["\r\n]/g, ''));
+                    const fetchedSedes = [];
+
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+
+                        const cols = lines[i].split('\t').map(c => c.trim().replace(/^"|"$/g, ''));
+                        const item = {};
+                        headers.forEach((h, idx) => { item[h] = cols[idx] || ''; });
+
+                        const estado = (item.estado || 'activo').toLowerCase();
+                        if (item.nombre && estado === 'activo') {
+                            fetchedSedes.push({
+                                id: item.id || `sede-${i}`,
+                                name: item.nombre,
+                                address: item.direccion || '',
+                                phone: item.telefono || '',
+                                lat: parseFloat(item.latitud) || 0,
+                                lng: parseFloat(item.longitud) || 0,
+                                scheduleText: item.horario_texto || ''
+                            });
+                        }
+                    }
+                    return fetchedSedes;
+                },
+
+                parseTSVConfig(text) {
+                    const lines = text.split(/\r?\n/);
+                    if (lines.length < 2) return;
+
+                    const headers = lines[0].split('\t').map(h => h.trim().toLowerCase().replace(/["\r\n]/g, ''));
+
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+
+                        const cols = lines[i].split('\t').map(c => c.trim().replace(/^"|"$/g, ''));
+                        const item = {};
+                        headers.forEach((h, idx) => { item[h] = cols[idx] || ''; });
+
+                        const clave = (item.clave || '').toLowerCase().trim();
+                        const valor = item.valor || '';
+                        if (clave === 'logo_url' && valor) this.logoUrl = valor;
+                        if (clave === 'yape_numero' && valor) this.yapeNumber = valor;
+                        if (clave === 'yape_titular' && valor) this.yapeOwner = valor;
+                        if (clave === 'tiempo_delivery' && valor) this.deliveryTimeEstimate = valor;
+                        if (clave === 'horario_activo' && valor) this.activeSchedule = valor;
+                    }
                 },
 
                 getSelectedSede() {
@@ -721,7 +763,7 @@
                     }
 
                     const businessPhone = sede.phone;
-                    let msg = `🐟 *NUEVO PEDIDO - D´JAVIS* 🔥\n\n`;
+                    let msg = `🐟 *NUEVO PEDIDO - D´JAVY* 🔥\n\n`;
                     msg += `🏬 *Sede Asignada:* ${sede.name}\n`;
                     msg += `📍 *Dirección Sede:* ${sede.address}\n`;
                     msg += `👤 *Cliente:* ${this.checkoutName.trim()}\n`;
@@ -768,7 +810,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-dj-sand text-dj-charcoal font-sans min-h-screen selection:bg-dj-teal selection:text-white transition-all duration-150 relative pb-10"
-      x-data="djavisApp()"
+      x-data="djavyApp()"
       :class="isCartOpen || isDetailOpen ? 'overflow-hidden h-screen' : ''"
       x-init="initData()">
 
@@ -776,10 +818,10 @@
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div id="logo-container" class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white overflow-hidden shadow-md border-2 border-dj-teal flex items-center justify-center p-0.5">
-                    <img :src="logoUrl" alt="Logo D´JAVIS" class="w-full h-full object-cover rounded-full">
+                    <img :src="logoUrl" alt="Logo D´JAVY" class="w-full h-full object-cover rounded-full">
                 </div>
                 <div>
-                    <h1 class="font-display font-bold text-2xl md:text-3xl tracking-wide text-dj-teal leading-none">D´JAVIS</h1>
+                    <h1 class="font-display font-bold text-2xl md:text-3xl tracking-wide text-dj-teal leading-none">D´JAVY</h1>
                     <p class="text-[9px] md:text-xs font-extrabold tracking-widest text-dj-teal/80 uppercase mt-0.5">Cevichería · Anticuchería</p>
                 </div>
             </div>
@@ -840,7 +882,7 @@
             </div>
 
             <div class="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden shadow-xl border-4 border-dj-teal transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80" alt="Ceviche D´JAVIS" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80" alt="Ceviche D´JAVY" class="w-full h-full object-cover">
             </div>
         </div>
     </div>
@@ -990,7 +1032,7 @@
                         <button x-show="currentStep === 'checkout'" @click="currentStep = 'cart'" class="text-white hover:text-white/80 mr-1 text-xs flex items-center gap-1 bg-white/10 px-2.5 py-1.5 rounded-lg transition font-extrabold">
                             <i class="fa-solid fa-chevron-left text-[10px]"></i> Volver
                         </button>
-                        <h2 class="font-display font-semibold text-base sm:text-lg tracking-wide" x-text="currentStep === 'cart' ? 'Tu Pedido D´JAVIS' : 'Finalizar Pedido'"></h2>
+                        <h2 class="font-display font-semibold text-base sm:text-lg tracking-wide" x-text="currentStep === 'cart' ? 'Tu Pedido D´JAVY' : 'Finalizar Pedido'"></h2>
                     </div>
                     <button @click="isCartOpen = false" class="text-white text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
                 </div>
@@ -1038,7 +1080,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: CHECKOUT CON FILTRADO AUTOMÁTICO DE SEDES -->
+                    <!-- PASO 2: CHECKOUT -->
                     <div x-show="currentStep === 'checkout'" class="space-y-4">
 
                         <!-- Selector & Asignador de Sede -->
@@ -1197,7 +1239,7 @@
             <span>•</span>
             <a href="https://tiktok.com/@djavy.piura" target="_blank" class="hover:underline flex items-center gap-1"><i class="fa-brands fa-tiktok"></i> @djavy.piura</a>
         </div>
-        <p class="text-[10px] text-dj-charcoal/60 font-semibold">© D´JAVIS — Cevichería & Anticuchería Piura. Todos los derechos reservados.</p>
+        <p class="text-[10px] text-dj-charcoal/60 font-semibold">© D´JAVY — Cevichería & Anticuchería Piura. Todos los derechos reservados.</p>
     </footer>
 
     <!-- Notificación Flotante -->
