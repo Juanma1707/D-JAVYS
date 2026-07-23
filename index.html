@@ -164,7 +164,7 @@
                     'bebidas': 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80'
                 },
 
-                // Complete default products matching Google Sheet exactly
+                // Initial default products matching Google Sheet exactly
                 products: [
                     // Dúos y Rondas
                     { id: 'duo-criollo', name: 'Dúo Criollo', description: 'Elige 2 opciones entre: Majado de yuca, Costillas de cerdo, Seco de chavelo, o Carne seca.', category: 'duos-rondas', price: 55.0, isAvailable: true, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80' },
@@ -231,12 +231,12 @@
                     }
 
                     // Fetch Google Sheet data silently in background
-                    this.fetchGoogleSheet();
+                    await this.fetchGoogleSheet();
 
-                    // Poll every 20 seconds for updates
+                    // Poll every 10 seconds for Google Sheet updates
                     setInterval(() => {
                         this.fetchGoogleSheet();
-                    }, 20000);
+                    }, 10000);
                 },
 
                 // Robust CSV Parser
@@ -273,9 +273,23 @@
                     return lines;
                 },
 
+                getCategoryId(rawCategory) {
+                    if (!rawCategory) return 'duos-rondas';
+                    const lower = rawCategory.toLowerCase();
+                    if (lower.includes('duo') || lower.includes('dúo') || lower.includes('ronda')) return 'duos-rondas';
+                    if (lower.includes('entrada')) return 'entradas';
+                    if (lower.includes('mar') || lower.includes('ceviche') || lower.includes('pescado')) return 'marino';
+                    if (lower.includes('chichar')) return 'chicharrones';
+                    if (lower.includes('crioll')) return 'criollos';
+                    if (lower.includes('parrill') || lower.includes('combo')) return 'parrillas';
+                    if (lower.includes('adicional')) return 'adicionales';
+                    if (lower.includes('bebida') || lower.includes('cerveza') || lower.includes('gaseosa')) return 'bebidas';
+                    return this.slugify(rawCategory);
+                },
+
                 async fetchGoogleSheet() {
                     try {
-                        const response = await fetch(`${this.sheetCsvUrl}&_t=${Date.now()}`);
+                        const response = await fetch(`${this.sheetCsvUrl}&_nocache=${Date.now()}`);
                         if (!response.ok) return;
 
                         const csvText = await response.text();
@@ -293,29 +307,30 @@
 
                         if (isHeader) {
                             firstRowLower.forEach((h, idx) => {
-                                if (h.includes('categor')) catIdx = idx;
-                                else if (h.includes('product') || h.includes('plato') || h.includes('nombre')) nameIdx = idx;
-                                else if (h.includes('descrip') || h.includes('detalle')) descIdx = idx;
-                                else if (h.includes('imagen') || h.includes('foto') || h.includes('url')) imgIdx = idx;
-                                else if (h.includes('precio') || h.includes('costo') || h.includes('s/')) priceIdx = idx;
-                                else if (h.includes('estado') || h.includes('disponib') || h.includes('stock')) statusIdx = idx;
-                                else if (h.includes('puente')) scheduleIdxs[0] = idx;
-                                else if (h.includes('josé') || h.includes('jose')) scheduleIdxs[1] = idx;
-                                else if (h.includes('progres') || h.includes('castilla')) scheduleIdxs[2] = idx;
-                                else if (h.includes('miraflores') || h.includes('country')) scheduleIdxs[3] = idx;
+                                const cleanH = h.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                                if (cleanH.includes('categor')) catIdx = idx;
+                                else if (cleanH.includes('product') || cleanH.includes('plato') || cleanH.includes('nombre')) nameIdx = idx;
+                                else if (cleanH.includes('descrip') || cleanH.includes('detalle')) descIdx = idx;
+                                else if (cleanH.includes('imagen') || cleanH.includes('foto') || cleanH.includes('url')) imgIdx = idx;
+                                else if (cleanH.includes('precio') || cleanH.includes('costo') || cleanH.includes('s/')) priceIdx = idx;
+                                else if (cleanH.includes('estado') || cleanH.includes('disponib') || cleanH.includes('stock')) statusIdx = idx;
+                                else if (cleanH.includes('puente')) scheduleIdxs[0] = idx;
+                                else if (cleanH.includes('jose')) scheduleIdxs[1] = idx;
+                                else if (cleanH.includes('progres') || cleanH.includes('castilla')) scheduleIdxs[2] = idx;
+                                else if (cleanH.includes('miraflores') || cleanH.includes('country')) scheduleIdxs[3] = idx;
                             });
                             startRow = 1;
                         } else {
                             startRow = 0;
                         }
 
-                        // Extract store schedule if present in row
+                        // Extract store schedule if present in row 1
                         if (rows[startRow]) {
                             const rSample = rows[startRow];
-                            if (rSample[scheduleIdxs[0]]) this.sedes[0].scheduleText = rSample[scheduleIdxs[0]];
-                            if (rSample[scheduleIdxs[1]]) this.sedes[1].scheduleText = rSample[scheduleIdxs[1]];
-                            if (rSample[scheduleIdxs[2]]) this.sedes[2].scheduleText = rSample[scheduleIdxs[2]];
-                            if (rSample[scheduleIdxs[3]]) this.sedes[3].scheduleText = rSample[scheduleIdxs[3]];
+                            if (rSample[scheduleIdxs[0]] && rSample[scheduleIdxs[0]].trim()) this.sedes[0].scheduleText = rSample[scheduleIdxs[0]].trim();
+                            if (rSample[scheduleIdxs[1]] && rSample[scheduleIdxs[1]].trim()) this.sedes[1].scheduleText = rSample[scheduleIdxs[1]].trim();
+                            if (rSample[scheduleIdxs[2]] && rSample[scheduleIdxs[2]].trim()) this.sedes[2].scheduleText = rSample[scheduleIdxs[2]].trim();
+                            if (rSample[scheduleIdxs[3]] && rSample[scheduleIdxs[3]].trim()) this.sedes[3].scheduleText = rSample[scheduleIdxs[3]].trim();
                         }
 
                         const parsedProducts = [];
@@ -328,16 +343,16 @@
 
                             const rawCategory = r[catIdx] || '🍱 Dúos y Rondas';
                             const description = r[descIdx] || '';
-                            const customImage = r[imgIdx] && r[imgIdx].startsWith('http') ? r[imgIdx] : '';
+                            const customImage = r[imgIdx] && r[imgIdx].startsWith('http') ? r[imgIdx].trim() : '';
                             
                             const rawPrice = (r[priceIdx] || '0').replace('S/', '').replace('S/.', '').replace(',', '.').trim();
                             const price = parseFloat(rawPrice) || 0.0;
                             
-                            const rawStatus = (r[statusIdx] || 'Disponible').trim();
-                            const isNegative = ['agotado', 'agotada', 'no', 'no disponible', '0', 'off', 'false', 'sin stock'].includes(rawStatus.toLowerCase());
+                            const rawStatus = (r[statusIdx] || 'Disponible').trim().toLowerCase();
+                            const isNegative = ['agotado', 'agotada', 'no', 'no disponible', '0', 'off', 'false', 'sin stock', 'x'].some(s => rawStatus.includes(s));
                             const statusText = isNegative ? 'Agotado' : 'Disponible';
 
-                            const catId = this.slugify(rawCategory);
+                            const catId = this.getCategoryId(rawCategory);
 
                             if (!categoriesMap.has(catId)) {
                                 categoriesMap.set(catId, {
@@ -349,9 +364,9 @@
                             const prodImage = customImage || this.categoryImages[catId] || 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80';
 
                             parsedProducts.push({
-                                id: `prod-${i}-${this.slugify(productName)}`,
-                                name: productName,
-                                description: description,
+                                id: `prod-${this.slugify(productName)}`,
+                                name: productName.trim(),
+                                description: description.trim(),
                                 category: catId,
                                 price: price,
                                 status: statusText,
@@ -375,7 +390,7 @@
                         }
 
                     } catch (err) {
-                        console.error("Sincronización en segundo plano silenciosa:", err);
+                        console.error("Sincronización silenciosa:", err);
                     }
                 },
 
@@ -390,7 +405,7 @@
                     if (!product) return false;
                     if (typeof product.isAvailable !== 'undefined') return product.isAvailable;
                     const s = (product.status || '').toString().toLowerCase().trim();
-                    return !['agotado', 'agotada', 'no', 'no disponible', '0', 'off', 'false', 'sin stock'].includes(s);
+                    return !['agotado', 'agotada', 'no', 'no disponible', '0', 'off', 'false', 'sin stock', 'x'].some(val => s.includes(val));
                 },
 
                 isStoreOpenNow(scheduleText) {
@@ -886,7 +901,7 @@
         };
     </script>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-dj-sand text-dj-charcoal font-sans min-h-screen selection:bg-dj-teal selection:text-white transition-all duration-150 relative pb-10"
       x-data="djavisApp()"
@@ -994,7 +1009,7 @@
                 </div>
             </aside>
 
-            <!-- Lista de Productos Dinámica (Garantizada 100% visible) -->
+            <!-- Lista de Productos Dinámica -->
             <div class="lg:col-span-3 space-y-10">
                 <template x-for="cat in categories" :key="cat.id">
                     <div x-show="shouldShowCategory(cat.id)" class="space-y-4" :id="`sec-${cat.id}`">
